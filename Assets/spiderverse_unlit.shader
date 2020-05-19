@@ -1,6 +1,4 @@
-﻿#warning Upgrade NOTE: unity_Scale shader variable was removed; replaced '_WorldSpaceCameraPos.w' with '1.0'
-
-Shader "Unlit/spiderverse_unlit"
+﻿Shader "Unlit/spiderverse_unlit"
 {
     Properties
     {
