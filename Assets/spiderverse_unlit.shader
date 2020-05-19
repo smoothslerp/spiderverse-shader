@@ -7,7 +7,8 @@
         _ColorDark ("ColorDark", Color) = (0,0,0,1)
         _ColorBright ("ColorBright", Color) = (1,1,1,1)
         _Rotation("Rotation", Range(0,360)) = 0
-        _Scale("Scale", Range(1,500)) = 1
+        _cScale("cScale", Range(1,500)) = 1
+        _lScale("lScale", Range(1,500)) = 1
     }
 
     SubShader
@@ -45,7 +46,8 @@
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float _Rotation;
-            float _Scale;
+            float _cScale;
+            float _lScale;
 
             float4 _Color;
             float4 _ColorDark;
@@ -82,20 +84,20 @@
                 
                 // divide by screenPos.w for perspective divide, divide by camPos.z to scale with camera distance
                 float2 st = rotate((i.screenPos.xy/(_WorldSpaceCameraPos.z * i.screenPos.w)), _Rotation * 3.14159/180);
-                st = frac(st*_Scale);
+                float2 cst = frac(st*_cScale);
+                float2 lst = frac(st*_lScale);
 
                 // circle pattern
-                float c = circle(st, NdotL);
+                float c = circle(cst, NdotL);
                 // line pattern dot(i.normal, -i.lightDir)=NdotL*-1 to draw these where the sun dont shine. 
-                float l = step(st.x, -NdotL); 
+                float l = step(lst.x, -NdotL); 
                 // adds up to at most 1
                 float eff = c + l;
 
                 // blend effects color
                 fixed4 effCol = c * _ColorBright + l * _ColorDark;
                 // blend with tex*_Color
-                fixed4 col = eff * effCol + (1-eff) * tex * _Color;
-                // return fixed4(st.xy, 0,0);
+                fixed4 col = eff * effCol + (1-eff) * tex;
                 return col;
             }
 
