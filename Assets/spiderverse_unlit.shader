@@ -5,9 +5,12 @@
         _MainTex ("Texture", 2D) = "white" {}
         _ColorDark ("ColorDark", Color) = (0,0,0,1)
         _ColorBright ("ColorBright", Color) = (1,1,1,1)
-        _Rotation("Rotation", Range(0,360)) = 0
         _cScale("cScale", Range(1,500)) = 1
         _lScale("lScale", Range(1,500)) = 1
+        _MinRadius("MinRadius", Range(0,1)) = 0
+        _MaxRadius("MaxRadius", Range(0,1)) = 1
+        _Rotation("Rotation", Range(0,360)) = 0
+        _ZScale("ZScale01", Int) = 1
     }
 
     SubShader
@@ -18,10 +21,10 @@
         Pass
         {
             CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
 
             #include "UnityCG.cginc"
+            #pragma vertex vert
+            #pragma fragment frag
 
             struct appdata
             {
@@ -40,9 +43,12 @@
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _Rotation;
             float _cScale;
             float _lScale;
+            float _Rotation;
+            float _MinRadius;
+            float _MaxRadius;
+            int _ZScale;
 
             float4 _ColorDark;
             float4 _ColorBright;
@@ -53,7 +59,7 @@
             }
 
             float2 rotate(float2 p, float theta) {
-                return float2(p.x * cos(theta)  - p.y * sin(theta),
+                return float2(p.x * cos(theta) - p.y * sin(theta),
                               p.x * sin(theta) + p.y * cos(theta));
             }
 
@@ -77,13 +83,15 @@
                 float4 tex = tex2D(_MainTex, i.uv);
                 float NdotL = dot(i.normal, -_WorldSpaceLightPos0.xyz);
                 
-                // divide by screenPos.w for perspective divide, divide by camPos.z to scale with camera distance
-                float2 st = rotate((i.screenPos.xy/(_WorldSpaceCameraPos.z * i.screenPos.w)), _Rotation * 3.14159/180);
+                // divide by screenPos.w for perspective divide
+                float2 st = rotate(i.screenPos.xy/i.screenPos.w, _Rotation * 3.14159/180);
                 float2 cst = frac(st*_cScale);
                 float2 lst = frac(st*_lScale);
 
-                // circle pattern
-                float c = circle(cst, NdotL);
+                // circle pattern, divide by camPos.z to scale with camera distance & clamp
+                _ZScale = clamp(_ZScale,0,1);
+                float zDiv = _WorldSpaceCameraPos.z * _ZScale + 1 - _ZScale;
+                float c = circle(cst, clamp(NdotL/zDiv, _MinRadius, _MaxRadius));
                 // line pattern NdotL*-1 to draw these where the sun dont shine. 
                 float l = step(lst.x, -NdotL); 
 
@@ -93,7 +101,7 @@
                 // blend with tex*_Color
                 float eff = c + l;
                 fixed4 col = eff * effCol + (1-eff) * tex;
-                
+
                 return col;
             }
             

@@ -58,5 +58,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-#custom 
+#custom (surface shaders are WIP) 
 resources.txt
+*surf* 
