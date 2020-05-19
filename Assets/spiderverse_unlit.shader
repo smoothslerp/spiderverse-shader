@@ -84,7 +84,7 @@
 
                 // circle pattern
                 float c = circle(cst, NdotL);
-                // line pattern dot(i.normal, -i.lightDir)=NdotL*-1 to draw these where the sun dont shine. 
+                // line pattern NdotL*-1 to draw these where the sun dont shine. 
                 float l = step(lst.x, -NdotL); 
 
                 // blend effects color
