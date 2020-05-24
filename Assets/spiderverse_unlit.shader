@@ -3,12 +3,10 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _ColorDark ("ColorDark", Color) = (0,0,0,1)
-        _ColorBright ("ColorBright", Color) = (1,1,1,1)
+        _LightenScale("_LightenScale", Range(0,1)) = 0.5
+        _DarkenScale("_DarkenScale", Range(0,1)) = 0.5
         _cScale("cScale", Range(1,500)) = 1
         _lScale("lScale", Range(1,500)) = 1
-        _MinRadius("MinRadius", Range(0,1)) = 0
-        _MaxRadius("MaxRadius", Range(0,1)) = 1
         _Rotation("Rotation", Range(0,360)) = 0
         _ZScale("ZScale01", Int) = 1
     }
@@ -46,12 +44,14 @@
             float _cScale;
             float _lScale;
             float _Rotation;
+            float _LightenScale;
+            float _DarkenScale;
+
             float _MinRadius;
             float _MaxRadius;
             int _ZScale;
 
-            float4 _ColorDark;
-            float4 _ColorBright;
+            
 
             float circle(float2 st, float radius) {
                 float d = distance(st,float2(0.5, 0.5)) * sqrt(2);
@@ -81,7 +81,7 @@
             fixed4 frag (v2f i) : SV_Target {   
                 
                 float4 tex = tex2D(_MainTex, i.uv);
-                float NdotL = dot(i.normal, -_WorldSpaceLightPos0.xyz);
+                float NdotL = dot(i.normal, _WorldSpaceLightPos0.xyz);
                 
                 // divide by screenPos.w for perspective divide
                 float2 st = rotate(i.screenPos.xy/i.screenPos.w, _Rotation * 3.14159/180);
@@ -94,16 +94,16 @@
                 float zDiv = _WorldSpaceCameraPos.z * _ZScale + 1 - _ZScale;
                 
                 // circle pattern, divide by camPos.z to scale with camera distance
-                float c = circle(cst, clamp(NdotL/zDiv, _MinRadius, _MaxRadius));
+                float circles = circle(cst, NdotL);
                 // line pattern NdotL*-1 to draw these where the sun dont shine. 
-                float l = step(lst.x, -NdotL); 
-
-                // blend effects color
-                fixed4 effCol = c * _ColorBright + l * _ColorDark;
+                float lines = step(lst.x, -NdotL); 
+                
+                fixed4 tDark = (1-_DarkenScale) * tex;
+                fixed4 tBright = 1 - ((1-_LightenScale) * (1 - tex)); 
                 
                 // blend with tex*_Color
-                float eff = c + l;
-                fixed4 col = eff * effCol + (1-eff) * tex;
+                float eff = circles + lines;
+                fixed4 col = circles * tBright + lines * tDark + (1-eff) * tex;
 
                 return col;
             }

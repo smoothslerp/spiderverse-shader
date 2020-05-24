@@ -56,29 +56,29 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AmbientStrength: 0.166
+    - _AmbientStrength: 0.225
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DarkenScale: 0.049
+    - _DarkenScale: 0.264
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LightenScale: 0.03
+    - _LightenScale: 0.029
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Rotation: 141
+    - _Rotation: 113
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularK: 32
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _cScale: 31
-    - _lScale: 73.8
+    - _cScale: 42.7
+    - _lScale: 57.3
     m_Colors:
     - _AmbientColor: {r: 0.6194375, g: 0.9056604, b: 0.84205526, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
