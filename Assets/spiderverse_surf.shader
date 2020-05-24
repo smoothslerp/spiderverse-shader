@@ -69,11 +69,9 @@ Shader "Custom/spiderverse"
         }
 
         void surf (Input IN, inout SurfaceOutputCustom o) {
-            
             float4 tex = tex2D(_MainTex, IN.uv_MainTex);
 
-            // divide by screenPos.w for perspective divide
-            float2 textureCoordinate = IN.screenPos.xy / IN.screenPos.w;
+            float2 textureCoordinate = IN.screenPos.xy / IN.screenPos.w; // perspective divide
             float aspect = _ScreenParams.x / _ScreenParams.y;
             textureCoordinate.x = textureCoordinate.x * aspect;
 
@@ -84,32 +82,24 @@ Shader "Custom/spiderverse"
         }
 
         half4 LightingCustom (SurfaceOutputCustom s, half3 lightDir, half3 viewDir) {
-            float NdotL = dot(s.Normal, lightDir);
             float2 st = rotate(s.textureCoordinate, _Rotation * 3.14159/180);
             float2 cst = frac(st*_cScale);
             float2 lst = frac(st*_lScale);
-
+            
+            float NdotL = dot(s.Normal, lightDir);
             // circle pattern
-            float c = circle(cst, NdotL);
+            float circles = circle(cst, NdotL);
             // line pattern NdotL*-1 to draw these where the sun dont shine. 
-            float l = step(lst.x, -NdotL); 
+            float lines = step(lst.x, -NdotL);
 
-            float eff = c + l; 
-
-            half3 h = normalize (lightDir + viewDir);
             half diff = max (0, NdotL);
-            float nh = max (0, dot (s.Normal, reflect(-lightDir, s.Normal)));
-            float spec = pow (nh, _SpecularK);
 
             half4 col;
-            float3 lighting = (s.Albedo * _LightColor0.rgb * diff + _LightColor0.rgb * spec + _AmbientColor * _AmbientStrength);
+            half3 l = (s.Albedo * _LightColor0.rgb * diff + _AmbientColor * _AmbientStrength);
+            half3 lDark = (1-_DarkenScale) * l;
+            half3 lBright = 1 - ((1-_LightenScale) * (1 - l)); 
 
-            half3 lightingDark = (1-_DarkenScale) * lighting; // .5 is the scale factor
-            half3 lightingBright = 1 - ((1-_LightenScale) * (1 - lighting)); // .5 is the scale factor
-
-
-            col.rgb = (1-eff) * lighting + c * lightingBright + l * lightingDark;
-            // col.rgb = lighting;
+            col.rgb = (1-(circles+lines)) * l + circles * lBright + lines * lDark;
             col.a = s.Alpha;
             
             return col;
