@@ -88,9 +88,12 @@
                 float2 cst = frac(st*_cScale);
                 float2 lst = frac(st*_lScale);
 
-                // circle pattern, divide by camPos.z to scale with camera distance & clamp
+                // clamp _ZScale from 0 to 1 to indicate off/on.
                 _ZScale = clamp(_ZScale,0,1);
+                // avoid dividing by 0
                 float zDiv = _WorldSpaceCameraPos.z * _ZScale + 1 - _ZScale;
+                
+                // circle pattern, divide by camPos.z to scale with camera distance
                 float c = circle(cst, clamp(NdotL/zDiv, _MinRadius, _MaxRadius));
                 // line pattern NdotL*-1 to draw these where the sun dont shine. 
                 float l = step(lst.x, -NdotL); 
