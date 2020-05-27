@@ -3,6 +3,7 @@ Shader "Custom/spiderverse"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _BumpMap ("Bumpmap", 2D) = "bump" {}
         _AmbientColor ("Ambient Color", Color) = (0,0,0,1)
         _AmbientStrength("_AmbientStrength", Range(0,1)) = 0.5
         _LightenScale("_LightenScale", Range(0,1)) = 0.5
@@ -28,6 +29,7 @@ Shader "Custom/spiderverse"
 
 
         sampler2D _MainTex;
+        sampler2D _BumpMap;
         // float4 _MainTex_ST;
         float _Rotation;
         float _cScale;
@@ -46,6 +48,7 @@ Shader "Custom/spiderverse"
             float3 viewDir;
             float3 vertexNormal; // This will hold the vertex normal
             float4 screenPos;
+            float2 uv_BumpMap;
         };
 
         struct SurfaceOutputCustom {
@@ -77,7 +80,7 @@ Shader "Custom/spiderverse"
 
             o.Albedo = tex.rgb;
             o.textureCoordinate = textureCoordinate;
-            o.Normal = IN.vertexNormal;
+            o.Normal = UnpackNormal (tex2D (_BumpMap, IN.uv_BumpMap));;
             o.Alpha = 1;
         }
 
