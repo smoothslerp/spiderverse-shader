@@ -58,6 +58,8 @@ Material:
     m_Floats:
     - _AmbientStrength: 0.108
     - _BumpScale: 1
+    - _ClampA: 0.2
+    - _ClampB: 0.8
     - _Cutoff: 0.5
     - _DarkenScale: 0.274
     - _DetailNormalMapScale: 1
@@ -66,15 +68,18 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _LightenScale: 0.078
+    - _MaxRadius: 1
     - _Metallic: 0
+    - _MinRadius: 0.1
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Rotation: 60
+    - _Rotation: 152
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularK: 64
     - _SrcBlend: 1
+    - _Step: 4
     - _UVSec: 0
     - _ZWrite: 1
     - _cScale: 69.9

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: spiderverse_surface_mat
-  m_Shader: {fileID: 4800000, guid: b3bde8a8ad217d143b810503d413fcd2, type: 3}
+  m_Shader: {fileID: 4800000, guid: d1360b858de496a42bb5803a34a744ae, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -56,8 +56,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AmbientStrength: 0.225
+    - _AmbientStrength: 0
     - _BumpScale: 1
+    - _ClampA: 0.216
+    - _ClampB: 1
     - _Cutoff: 0.5
     - _DarkenScale: 0.264
     - _DetailNormalMapScale: 1
@@ -65,8 +67,9 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LightenScale: 0.029
+    - _LightenScale: 0.48
     - _Metallic: 0
+    - _MinRadius: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -75,6 +78,7 @@ Material:
     - _SpecularHighlights: 1
     - _SpecularK: 32
     - _SrcBlend: 1
+    - _Step: 10.4
     - _UVSec: 0
     - _ZWrite: 1
     - _cScale: 42.7

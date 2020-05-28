@@ -1,4 +1,4 @@
-Shader "Custom/spiderverse"
+Shader "Custom/spiderverse_cel"
 {
     Properties
     {
@@ -11,6 +11,11 @@ Shader "Custom/spiderverse"
         _Rotation("Rotation", Range(0,360)) = 0
         _cScale("cScale", Range(1,100)) = 1
         _lScale("lScale", Range(1,100)) = 1
+
+        _Step("Step", Range(0,20)) = 4
+        _ClampA("_ClampA", Range(0,1)) = .2
+        _ClampB("_ClampB", Range(0,1)) = .8
+
         _MinRadius("_MinRadius", Range(0,1)) = .1 // if lower than this, no circle is shown
 
     }
@@ -31,7 +36,6 @@ Shader "Custom/spiderverse"
 
         sampler2D _MainTex;
         sampler2D _BumpMap;
-        // float4 _MainTex_ST;
         float _Rotation;
         float _cScale;
         float _lScale;
@@ -41,8 +45,12 @@ Shader "Custom/spiderverse"
         float4 _AmbientColor;
         float _AmbientStrength;
 
+        int _Step;
+        float _ClampA;
+        float _ClampB;
+
         float _MinRadius;
-         
+
         struct Input
         {
             float2 uv_MainTex;
@@ -85,7 +93,8 @@ Shader "Custom/spiderverse"
         }
 
         half4 LightingCustom (SurfaceOutputCustom s, half3 lightDir, half3 viewDir) {
-            float2 st = rotate(s.textureCoordinate, _Rotation * 3.14159/180);
+            float2 st = rotate(s.textureCoordinate, _Rotation * 3.14/180);
+
             float2 cst = frac(st*_cScale);
             float2 lst = frac(st*_lScale);
             
@@ -95,10 +104,10 @@ Shader "Custom/spiderverse"
             // line pattern NdotL*-1 to draw these where the sun dont shine. 
             float lines = step(lst.x, -NdotL);
 
-            half diff = max (0, NdotL);
+            half cel = clamp(floor(max(NdotL, 0) * _Step)/_Step, _ClampA, _ClampB);
 
             half4 col;
-            half3 l = (s.Albedo * _LightColor0.rgb * diff + _AmbientColor * _AmbientStrength);
+            half3 l = (s.Albedo * _LightColor0.rgb * cel + _AmbientColor * _AmbientStrength);
             half3 lDark = (1-_DarkenScale) * l;
             half3 lBright = 1 - ((1-_LightenScale) * (1 - l)); 
 

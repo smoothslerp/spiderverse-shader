@@ -2,13 +2,13 @@
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
+        _MainTex ("Texture", 2D) = "grey" {}
         _LightenScale("_LightenScale", Range(0,1)) = 0.5
         _DarkenScale("_DarkenScale", Range(0,1)) = 0.5
         _cScale("cScale", Range(1,500)) = 1
         _lScale("lScale", Range(1,500)) = 1
         _Rotation("Rotation", Range(0,360)) = 0
-        _ZScale("ZScale01", Int) = 1
+        _MinRadius("_MinRadius", Range(0,1)) = .1 // if lower than this, no circle is shown
     }
 
     SubShader
@@ -48,10 +48,6 @@
             float _DarkenScale;
 
             float _MinRadius;
-            float _MaxRadius;
-            int _ZScale;
-
-            
 
             float circle(float2 st, float radius) {
                 float d = distance(st,float2(0.5, 0.5)) * sqrt(2);
@@ -81,20 +77,15 @@
             fixed4 frag (v2f i) : SV_Target {   
                 
                 float4 tex = tex2D(_MainTex, i.uv);
-                float NdotL = dot(i.normal, _WorldSpaceLightPos0.xyz);
+                float NdotL = dot(i.normal, -_WorldSpaceLightPos0.xyz);
                 
-                // divide by screenPos.w for perspective divide
+                // perspective divide & rotation 
                 float2 st = rotate(i.screenPos.xy/i.screenPos.w, _Rotation * 3.14159/180);
                 float2 cst = frac(st*_cScale);
                 float2 lst = frac(st*_lScale);
 
-                // clamp _ZScale from 0 to 1 to indicate off/on.
-                _ZScale = clamp(_ZScale,0,1);
-                // avoid dividing by 0
-                float zDiv = _WorldSpaceCameraPos.z * _ZScale + 1 - _ZScale;
-                
-                // circle pattern, divide by camPos.z to scale with camera distance
-                float circles = circle(cst, NdotL);
+                // circle pattern
+                float circles = circle(cst, step(_MinRadius, NdotL) * NdotL);
                 // line pattern NdotL*-1 to draw these where the sun dont shine. 
                 float lines = step(lst.x, -NdotL); 
                 
