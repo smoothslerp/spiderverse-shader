@@ -4,15 +4,13 @@ Shader "Custom/spiderverse_cel"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _BumpMap ("Bumpmap", 2D) = "bump" {}
-        _AmbientColor ("Ambient Color", Color) = (0,0,0,1)
-        _AmbientStrength("_AmbientStrength", Range(0,1)) = 0.5
         _LightenScale("_LightenScale", Range(0,1)) = 0.5
         _DarkenScale("_DarkenScale", Range(0,1)) = 0.5
         _Rotation("Rotation", Range(0,360)) = 0
         _cScale("cScale", Range(1,100)) = 1
         _lScale("lScale", Range(1,100)) = 1
 
-        _Step("Step", Range(0,20)) = 4
+        _Step("Step", Int) = 4
         _ClampA("_ClampA", Range(0,1)) = .2
         _ClampB("_ClampB", Range(0,1)) = .8
 
@@ -38,9 +36,6 @@ Shader "Custom/spiderverse_cel"
         float _LightenScale;
         float _DarkenScale;
 
-        float4 _AmbientColor;
-        float _AmbientStrength;
-
         int _Step;
         float _ClampA;
         float _ClampB;
@@ -52,7 +47,7 @@ Shader "Custom/spiderverse_cel"
             float2 uv_MainTex;
             float3 vertex;
             float3 viewDir;
-            float3 vertexNormal; // This will hold the vertex normal
+            float3 vertexNormal;
             float4 screenPos;
             float2 uv_BumpMap;
         };
@@ -78,7 +73,7 @@ Shader "Custom/spiderverse_cel"
         void surf (Input IN, inout SurfaceOutputCustom o) {
             float4 tex = tex2D(_MainTex, IN.uv_MainTex);
 
-            float2 textureCoordinate = IN.screenPos.xy / IN.screenPos.w; // perspective divide
+            float2 textureCoordinate = IN.screenPos.xy / IN.screenPos.w;
             float aspect = _ScreenParams.x / _ScreenParams.y;
             textureCoordinate.x = textureCoordinate.x * aspect;
 
@@ -91,19 +86,19 @@ Shader "Custom/spiderverse_cel"
         half4 LightingCustom (SurfaceOutputCustom s, half3 lightDir, half3 viewDir) {
             float2 st = rotate(s.textureCoordinate, _Rotation * 3.14/180);
 
-            float2 cst = frac(st*_cScale);
-            float2 lst = frac(st*_lScale);
+            float2 cst = frac(st*(_cScale*abs(_WorldSpaceCameraPos.z)));
+            float2 lst = frac(st*(_lScale*abs(_WorldSpaceCameraPos.z)));
             
             float NdotL = dot(s.Normal, lightDir);
             // circle pattern
             float circles = circle(cst, step(_MinRadius, NdotL) * NdotL);
             // line pattern NdotL*-1 to draw these where the sun dont shine. 
             float lines = step(lst.x, -NdotL);
-
-            half cel = clamp(floor(max(NdotL, 0) * _Step)/_Step, _ClampA, _ClampB);
+            // cel shading with clamps
+            half cel = clamp(ceil(max(NdotL, 0) * _Step)/_Step, _ClampA, _ClampB);
 
             half4 col;
-            half3 l = (s.Albedo * _LightColor0.rgb * cel + _AmbientColor * _AmbientStrength);
+            half3 l = (s.Albedo * _LightColor0.rgb * cel);
             half3 lDark = (1-_DarkenScale) * l;
             half3 lBright = 1 - ((1-_LightenScale) * (1 - l)); 
 
