@@ -22,16 +22,12 @@ Shader "Custom/spiderverse"
         CGPROGRAM
 
         #include "UnityCG.cginc"
-        // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Custom
-
-        // Use shader model 3.0 target, to get nicer looking lighting
+        #pragma surface surf Custom 
         #pragma target 3.0
 
 
         sampler2D _MainTex;
         sampler2D _BumpMap;
-        // float4 _MainTex_ST;
         float _Rotation;
         float _cScale;
         float _lScale;
