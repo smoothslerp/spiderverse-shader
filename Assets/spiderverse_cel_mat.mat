@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: spiderverse_mat
+  m_Name: spiderverse_cel_mat
   m_Shader: {fileID: 4800000, guid: d1360b858de496a42bb5803a34a744ae, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

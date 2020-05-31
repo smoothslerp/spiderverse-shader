@@ -4,19 +4,21 @@ Shader "Custom/spiderverse_cel"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _BumpMap ("Bumpmap", 2D) = "bump" {}
+
+        // ben-day process
         _LightenScale("_LightenScale", Range(0,1)) = 0.5
         _DarkenScale("_DarkenScale", Range(0,1)) = 0.5
         _Rotation("Rotation", Range(0,360)) = 0
-        _cScale("cScale", Range(1,100)) = 1
-        _lScale("lScale", Range(1,100)) = 1
+        _cScale("cScale", Range(1,200)) = 50
+        _lScale("lScale", Range(1,200)) = 50
+        _MinRadius("_MinRadius", Range(0,1)) = .1 // if lower than this value, no circle is shown
 
+        // cel shading 
         _Step("Step", Int) = 4
         _ClampA("_ClampA", Range(0,1)) = .2
         _ClampB("_ClampB", Range(0,1)) = .8
-
-        _MinRadius("_MinRadius", Range(0,1)) = .1 // if lower than this, no circle is shown
-
     }
+
     SubShader
     {
         Tags { "RenderType"="Opaque" }

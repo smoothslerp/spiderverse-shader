@@ -6,11 +6,13 @@ Shader "Custom/spiderverse"
         _BumpMap ("Bumpmap", 2D) = "bump" {}
         _AmbientColor ("Ambient Color", Color) = (0,0,0,1)
         _AmbientStrength("_AmbientStrength", Range(0,1)) = 0.5
+        
+        // ben-day process        
         _LightenScale("_LightenScale", Range(0,1)) = 0.5
         _DarkenScale("_DarkenScale", Range(0,1)) = 0.5
         _Rotation("Rotation", Range(0,360)) = 0
-        _cScale("cScale", Range(1,200)) = 1
-        _lScale("lScale", Range(1,200)) = 1
+        _cScale("cScale", Range(1,200)) = 50
+        _lScale("lScale", Range(1,200)) = 50
         _MinRadius("_MinRadius", Range(0,1)) = .1 // if lower than this, no circle is shown
 
     }
