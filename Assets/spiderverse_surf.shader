@@ -9,8 +9,8 @@ Shader "Custom/spiderverse"
         _LightenScale("_LightenScale", Range(0,1)) = 0.5
         _DarkenScale("_DarkenScale", Range(0,1)) = 0.5
         _Rotation("Rotation", Range(0,360)) = 0
-        _cScale("cScale", Range(1,100)) = 1
-        _lScale("lScale", Range(1,100)) = 1
+        _cScale("cScale", Range(1,200)) = 1
+        _lScale("lScale", Range(1,200)) = 1
         _MinRadius("_MinRadius", Range(0,1)) = .1 // if lower than this, no circle is shown
 
     }
